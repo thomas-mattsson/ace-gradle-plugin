@@ -1,0 +1,25 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+group 'com.ibm.gradle.plugins.ace'
+version '0.1'
+
+gradlePlugin {
+    plugins {
+        ace {
+            id = 'ibm-ace'
+            implementationClass = 'com.ibm.gradle.plugins.ace.ACEPlugin'
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            url "../mavenrepo"
+        }
+    }
+}
