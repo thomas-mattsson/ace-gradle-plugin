@@ -19,7 +19,7 @@ gradlePlugin {
 publishing {
     repositories {
         maven {
-            url "../mavenrepo"
+            url "/home/aceuser/mavenrepo"
         }
     }
 }
