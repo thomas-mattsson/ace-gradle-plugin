@@ -1,0 +1,28 @@
+plugins {
+    id 'base'
+    id 'ibm-ace' version '0.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    testClasses
+}
+
+dependencies {
+    ace project(path: ':MyExampleApplication', configuration: 'ace')
+    acetest project(path: ':MyExampleApplicationTest', configuration: 'acetest')
+    testClasses (project(path: ':MyExampleApplicationTest', configuration: 'runtimeElements'))
+}
+
+acetest {
+    additionalTestProjectConfiguration = configurations.testClasses
+}
+
+subprojects {
+    rootProject.clean.dependsOn tasks.matching { it.name == 'clean' }
+}
+
+defaultTasks 'clean', ':acetest'

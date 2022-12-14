@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        maven {
+            url '../../mavenrepo'
+        }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'ace-hello-world'
+
+include 'MyExampleApplication', 'MyExampleApplicationJava', 'MyExampleApplicationTest'

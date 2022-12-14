@@ -1,0 +1,54 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+}
+
+repositories { 
+    mavenCentral()
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs '.'
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    compileOnly files("$System.env.MQSI_FILEPATH/classes/jplugin2.jar")
+    compileOnly files("$System.env.MQSI_FILEPATH/classes/javacompute.jar")
+}
+
+eclipse {
+    pathVariables 'GRADLE_HOME': gradle.gradleUserHomeDir
+    classpath {
+        file {
+            withXml {
+                def node = it.asNode()
+                new Node(node, 'classpathentry', [kind: 'var', path: 'JCN_HOME/javacompute.jar'])
+                new Node(node, 'classpathentry', [kind: 'var', path: 'JCN_HOME/jplugin2.jar'])
+                new Node(node, 'classpathentry', [kind: 'var', path: 'COMMON_CLASSES_HOME/IntegrationAPI.jar'])
+            }
+            whenMerged {
+                entries.find{ it.kind == 'output' }.each {
+                    it.path = ''
+                } 
+            }
+        }
+    }
+}
