@@ -41,7 +41,6 @@ abstract class TestTask extends Exec {
             if (it.type == 'test-bar') {
                 getLogger().info('Testing using ' + it.name)
                 String traceFile = ProjectPaths.getDeployTraceFile(project, it.name).getAbsolutePath()
-                println getAdditionalTestProjectConfiguration().getOrNull()
                 if (getAdditionalTestProjectConfiguration().isPresent()) {
                     boolean first = true;
                     String integrationServerClassPath = '';

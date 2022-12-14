@@ -1,6 +1,6 @@
 package com.ibm.gradle.plugins.ace
 
-import com.ibm.gradle.plugins.ace.extensions.DeployExtension
+import com.ibm.gradle.plugins.ace.extensions.TestExtension
 import com.ibm.gradle.plugins.ace.tasks.BarTask
 import com.ibm.gradle.plugins.ace.tasks.CopyBuildFilesTask
 import com.ibm.gradle.plugins.ace.tasks.CreateWorkDirTask
@@ -31,6 +31,7 @@ class ACEPlugin implements Plugin<Project> {
         testconfig.extendsFrom(aceconfig)
 
         Task copyTask = project.task('copybarsource', type: CopyBuildFilesTask)
+        copyTask.getConfiguration().set(aceconfig)
         Task barTask = project.task('bar', type: BarTask, constructorArgs: [binpath])
         barTask.dependsOn(copyTask)
 
@@ -54,7 +55,7 @@ class ACEPlugin implements Plugin<Project> {
             }
         }
 
-        project.getArtifacts().add('ace', barTask.barFile, cpa -> {
+        project.getArtifacts().add(type == 'test-bar' ? 'acetest' : 'ace', barTask.barFile, cpa -> {
             cpa.setName(project.getName())
             cpa.setExtension('bar')
             cpa.setType(type)
@@ -63,12 +64,12 @@ class ACEPlugin implements Plugin<Project> {
 
         Task createworkdirTask = project.task('createworkdir', type: CreateWorkDirTask, constructorArgs: [binpath])
         Task deployTask = project.task('acedeploy', type: DeployTask, constructorArgs: [binpath])
-        Object deployExtension = project.getExtensions().create('acetest', DeployExtension);
         deployTask.dependsOn(createworkdirTask)
-        deployTask.getConfiguration().set(deployExtension.getConfiguration())
+        deployTask.getConfiguration().set(testconfig)
+        Object testExtension = project.getExtensions().create('acetest', TestExtension);
         Task testTask = project.task('acetest', type: TestTask, constructorArgs: [binpath])
         testTask.dependsOn(deployTask)
-        testTask.getConfiguration().set(deployExtension.getConfiguration())
-        testTask.getAdditionalTestProjectConfiguration().set(deployExtension.getAdditionalTestProjectConfiguration())
+        testTask.getConfiguration().set(testconfig)
+        testTask.getAdditionalTestProjectConfiguration().set(testExtension.getAdditionalTestProjectConfiguration())
     }
 }

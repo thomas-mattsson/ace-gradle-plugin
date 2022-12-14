@@ -32,11 +32,13 @@ abstract class DeployTask extends Exec {
         String binpath = this.binpath
         Project project = getProject()
         String workdir = ProjectPaths.getDeployDir(project).getAbsolutePath()
-        getConfiguration().get().each {
-            getLogger().info('Deploying ' + it.name)
-            String traceFile = ProjectPaths.getDeployTraceFile(project, it.name).getAbsolutePath()
-            commandLine binpath + 'ibmint', 'deploy', '--do-not-compile-java', '--output-work-directory', workdir, '--trace', traceFile, '--input-bar-file', it.path
-            super.exec()
+        getConfiguration().get().resolvedConfiguration.getResolvedArtifacts().each {
+            if (it.type == 'bar' || it.type == 'test-bar') {
+                getLogger().info('Deploying ' + it.file.name)
+                String traceFile = ProjectPaths.getDeployTraceFile(project, it.name).getAbsolutePath()
+                commandLine binpath + 'ibmint', 'deploy', '--do-not-compile-java', '--output-work-directory', workdir, '--trace', traceFile, '--input-bar-file', it.file.path
+                super.exec()
+            }
         }
     }
 }

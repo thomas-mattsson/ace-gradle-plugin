@@ -24,6 +24,6 @@ class ProjectPaths {
     }
 
     static File getDeployTraceFile(Project project, String barfile) {
-        return new File(project.getBuildDir().getAbsolutePath(), 'deploy' + barfile + '.log')
+        return new File(project.getBuildDir().getAbsolutePath(), 'deploy-' + barfile + '.log')
     }
 }

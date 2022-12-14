@@ -4,15 +4,26 @@ import com.ibm.gradle.plugins.ace.utils.ProjectPaths
 
 import java.io.File
 
+import javax.inject.Inject
+
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.provider.Property
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.TaskAction
 
-class CopyBuildFilesTask extends Copy {
+abstract class CopyBuildFilesTask extends Copy {
 
+    @Input
+    abstract public Property<Configuration> getConfiguration()
+
+    @Inject
     CopyBuildFilesTask() {
         group = 'ACE'
         description = 'Copies the necessary files to build the bar file'
+        dependsOn({getConfiguration().get()})
         Project project = getProject()
         File aceBuildDir = new File(ProjectPaths.getBuildDir(project).getAbsolutePath(), project.getName());
         from project.fileTree(dir: project.getProjectDir())
@@ -49,5 +60,18 @@ class CopyBuildFilesTask extends Copy {
 
         includeEmptyDirs = false
         into aceBuildDir
+    }
+
+    @TaskAction
+    @Override
+    protected void copy() {
+        getConfiguration().get().resolvedConfiguration.getResolvedArtifacts().each {
+            if (it.type == 'jar') {
+                getLogger().info('Including jar: ' + it.file)
+                from it.file
+            }
+        }
+        
+        super.copy()
     }
 }
