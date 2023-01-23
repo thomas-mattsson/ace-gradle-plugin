@@ -34,6 +34,7 @@ class ACEPlugin implements Plugin<Project> {
         copyTask.getConfiguration().set(aceconfig)
         Task barTask = project.task('bar', type: BarTask, constructorArgs: [binpath])
         barTask.dependsOn(copyTask)
+        barTask.getConfiguration().set(aceconfig)
 
         // If there's a jar task in the project, make sure we depend on it
         Task jarTask = project.tasks.findByName('jar')
