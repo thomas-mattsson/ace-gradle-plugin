@@ -47,6 +47,8 @@ abstract class CopyBuildFilesTask extends Copy {
         include '**/*.msgflow'
         include '**/*.json'
         include '**/*.policyxml'
+        include '**/*.esql'
+        include '**/*.subflow'
         include '**/.project'
 
         Task jarTask = project.tasks.findByName('jar')
