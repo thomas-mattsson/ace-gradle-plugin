@@ -61,7 +61,11 @@ abstract class BarTask extends Exec {
             return
         }
 
+        getLogger().info('Project directory: ' + projectDir);
         File projectFile = new File(projectDir, '.project');
+        if (projectFile.exists()) {
+            getLogger().info('Project file exists');
+        }
         if (projectFile.exists() && ProjectParser.isApplicationProject(projectFile)) {
             getLogger().info('Project is an application, compiling maps and schemas.');
             commandLine this.binpath + 'ibmint', 'package', '--do-not-compile-java', '--compile-maps-and-schemas', '--input-path', inputPath, '--output-bar-file', barFile.getAbsolutePath(), '--project', projectName, '--trace', traceFile
