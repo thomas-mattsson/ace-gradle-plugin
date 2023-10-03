@@ -1,7 +1,12 @@
 pluginManagement {
     repositories {
         maven {
-            url '../../mavenrepo'
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/thomas-mattsson/ace-gradle-plugin")
+            credentials {
+                username = System.getenv("GITUSERNAME")
+                password = System.getenv("GITTOKEN")
+            }
         }
         gradlePluginPortal()
     }
