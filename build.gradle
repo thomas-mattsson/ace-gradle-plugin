@@ -19,7 +19,12 @@ gradlePlugin {
 publishing {
     repositories {
         maven {
-            url "/home/aceuser/mavenrepo"
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/thomas-mattsson/ace-gradle-plugin")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
         }
     }
 }
