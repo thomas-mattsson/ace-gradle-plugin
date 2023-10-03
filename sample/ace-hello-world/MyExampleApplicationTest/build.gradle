@@ -2,7 +2,7 @@ plugins {
     id 'base'
     id 'java-library'
     id 'eclipse'
-    id 'ibm-ace' version '0.3.1'
+    id 'com.ibm.ace-gradle-plugin' version '0.3.1'
 }
 
 repositories {
