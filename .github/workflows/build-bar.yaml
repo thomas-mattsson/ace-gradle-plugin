@@ -13,8 +13,8 @@ jobs:
         username: cp
         password: ${{ secrets.entitlement_key }}
       env:
-        USERNAME: ${{ secrets.package_publishing_username }}
-        TOKEN: ${{ secrets.package_publishing_token }}
+        GITUSERNAME: ${{ secrets.package_publishing_username }}
+        GITTOKEN: ${{ secrets.package_publishing_token }}
     steps:
       - name: install-git-in-ace-container
         run: microdnf update && microdnf install --nodocs git 
