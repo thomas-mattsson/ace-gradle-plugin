@@ -1,0 +1,30 @@
+name: Build, Test and Publish barfile
+run-name: ${{ github.actor }} triggered build
+on: [push]
+jobs:
+  build-and-publish-barfile:
+    defaults:
+      run:
+        working-directory: sample/ace-hello-world
+    runs-on: ubuntu-latest
+    container: 
+      # ACE versions: https://www.ibm.com/docs/en/app-connect/containers_cd?topic=obtaining-app-connect-enterprise-server-image-from-cloud-container-registry
+      #image: cp.icr.io/cp/appc/ace-server-prod:12.0.8.0-r2-20230524-022316@sha256:68c8723c97d2b70985972f25cf06f6b9d5a3e008c22e7df6f044c1dd988cb77f
+      image: cp.icr.io/cp/appc/ace-server-prod@sha256:c1fac1a80768e26f64d8fff770b10a96b99b2bd4df2e2cd533e96f1a85ebec5c
+      options: --user root
+      credentials:
+        username: cp
+        password: ${{ secrets.entitlement_key }}
+      env:
+        USERNAME: ${{ secrets.package_publishing_username }}
+        TOKEN: ${{ secrets.package_publishing_token }}
+    steps:
+      - name: install-git-in-ace-container
+        run: microdnf update && microdnf install --nodocs git 
+      - uses: actions/checkout@v4
+      - name: setup-gradle-in-ace-container
+        uses: gradle/gradle-build-action@v2
+        env:
+          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/mqm/bin:/opt/ibm/ace-12/common/jdk/bin
+      - name: run-gradlew-in-ace-container
+        run: source /opt/ibm/ace-12/server/bin/mqsiprofile; export JAVA_HOME=/opt/ibm/ace-12/common/jdk; ./gradlew --no-daemon;
