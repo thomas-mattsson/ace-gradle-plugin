@@ -1,6 +1,6 @@
 plugins {
     id 'base'
-    id 'ibm-ace' version '0.3.1'
+    id 'com.ibm.ace-gradle-plugin' version '0.3.1'
 }
 
 repositories {
