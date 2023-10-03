@@ -3,9 +3,6 @@ run-name: ${{ github.actor }} triggered build
 on: [push]
 jobs:
   build-and-publish-barfile:
-    defaults:
-      run:
-        working-directory: sample/ace-hello-world
     runs-on: ubuntu-latest
     container: 
       # ACE versions: https://www.ibm.com/docs/en/app-connect/containers_cd?topic=obtaining-app-connect-enterprise-server-image-from-cloud-container-registry
@@ -24,7 +21,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: setup-gradle-in-ace-container
         uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: sample/ace-hello-world
         env:
           PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/mqm/bin:/opt/ibm/ace-12/common/jdk/bin
       - name: run-gradlew-in-ace-container
         run: source /opt/ibm/ace-12/server/bin/mqsiprofile; export JAVA_HOME=/opt/ibm/ace-12/common/jdk; ./gradlew --no-daemon;
+        working-directory: sample/ace-hello-world
